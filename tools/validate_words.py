@@ -8,17 +8,29 @@ ALLOWED_POS = {"noun", "verb", "adjective", "adverb", "pronoun", "preposition", 
 
 def validate(path: str) -> list[str]:
     errors = []
-    with open(path, encoding="utf-8") as f:
-        words = json.load(f)
+    try:
+        with open(path, encoding="utf-8") as f:
+            words = json.load(f)
+    except FileNotFoundError:
+        return [f"File not found: {path}"]
+    except json.JSONDecodeError as e:
+        return [f"File is not valid JSON: {e}"]
 
     if not isinstance(words, list):
         return ["Top-level JSON must be an array"]
+
+    if len(words) == 0:
+        errors.append("words.json is empty (0 entries)")
 
     seen_ids = set()
     seen_order_indexes = set()
     seen_words = set()
 
     for i, entry in enumerate(words):
+        if not isinstance(entry, dict):
+            errors.append(f"Entry {i}: not a JSON object")
+            continue
+
         missing = REQUIRED_FIELDS - entry.keys()
         if missing:
             errors.append(f"Entry {i}: missing fields {missing}")
