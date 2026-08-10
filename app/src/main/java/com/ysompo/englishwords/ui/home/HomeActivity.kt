@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.startButton.setOnClickListener {
-            // LearnWordsActivity is wired in Task 17
+            startActivity(Intent(this, com.ysompo.englishwords.ui.learn.LearnWordsActivity::class.java))
         }
         binding.weeklyQuizButton.setOnClickListener {
             startActivity(Intent(this, com.ysompo.englishwords.ui.quiz.QuizActivity::class.java).apply {

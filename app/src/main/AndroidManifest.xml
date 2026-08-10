@@ -23,6 +23,7 @@
 
         <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".ui.quiz.QuizActivity" android:exported="false" />
+        <activity android:name=".ui.learn.LearnWordsActivity" android:exported="false" />
     </application>
 
 </manifest>
