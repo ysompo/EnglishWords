@@ -17,4 +17,18 @@ object StreakCalculator {
     fun isMonthFullyStarred(weeklyStatusesInMonth: List<WeeklyStatusEntity>): Boolean {
         return weeklyStatusesInMonth.isNotEmpty() && weeklyStatusesInMonth.all { it.starEarned }
     }
+
+    fun consecutiveStarredWeeks(statuses: List<WeeklyStatusEntity>): Int {
+        if (statuses.isEmpty()) return 0
+        val byWeek = statuses.associateBy { it.weekStartDate }
+        var cursor = statuses.maxOf { WeekUtils.parseDate(it.weekStartDate) }
+        var streak = 0
+        while (true) {
+            val status = byWeek[WeekUtils.formatDate(cursor)] ?: break
+            if (!status.starEarned) break
+            streak++
+            cursor = cursor.minusDays(7)
+        }
+        return streak
+    }
 }

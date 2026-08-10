@@ -40,11 +40,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val todayCompletion = progressRepository.completionForDate(today)
             val todayComplete = StreakCalculator.isDayComplete(todayCompletion)
 
-            val allStatuses = progressRepository.allWeeklyStatuses().sortedByDescending { it.weekStartDate }
-            var streak = 0
-            for (status in allStatuses) {
-                if (status.starEarned) streak++ else break
-            }
+            val allStatuses = progressRepository.allWeeklyStatuses()
+            val streak = StreakCalculator.consecutiveStarredWeeks(allStatuses)
 
             val nextBadge = BadgeCalculator.nextBadge(learnedWords)
 

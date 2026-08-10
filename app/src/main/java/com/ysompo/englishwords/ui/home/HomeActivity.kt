@@ -1,7 +1,7 @@
 package com.ysompo.englishwords.ui.home
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.ysompo.englishwords.databinding.ActivityHomeBinding
@@ -27,7 +27,7 @@ class HomeActivity : AppCompatActivity() {
                 "פתחת את כל התגים!"
             }
             binding.startButton.text = if (state.todayComplete) "כבר סיימת היום, כל הכבוד!" else "התחל ללמוד היום"
-            binding.weeklyQuizButton.visibility = if (state.weeklyQuizAvailable) android.view.View.VISIBLE else android.view.View.GONE
+            binding.weeklyQuizButton.visibility = if (state.weeklyQuizAvailable) View.VISIBLE else View.GONE
         }
 
         binding.startButton.setOnClickListener {
