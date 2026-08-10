@@ -21,6 +21,11 @@ class ProgressActivity : AppCompatActivity() {
         viewModel.load()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.load()
+    }
+
     private fun render(state: ProgressState) {
         binding.monthlyRewardBanner.visibility = if (state.currentMonthFullyStarred) View.VISIBLE else View.GONE
 
