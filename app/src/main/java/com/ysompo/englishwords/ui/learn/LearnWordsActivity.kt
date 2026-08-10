@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.ysompo.englishwords.databinding.ActivityLearnWordsBinding
@@ -26,7 +25,13 @@ class LearnWordsActivity : AppCompatActivity() {
 
     private val requestAudioPermission = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
-    ) { granted -> if (granted) startListening() }
+    ) { granted ->
+        if (granted) {
+            startListening()
+        } else {
+            android.widget.Toast.makeText(this, "צריך הרשאת מיקרופון כדי לתרגל הגייה", android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +45,7 @@ class LearnWordsActivity : AppCompatActivity() {
         viewModel.state.observe(this) { state -> render(state) }
 
         binding.listenButton.setOnClickListener {
-            viewModel.state.value?.let { ttsHelper.speak(it.words[it.currentIndex].word) }
+            viewModel.state.value?.let { state -> if (state.words.isNotEmpty()) ttsHelper.speak(state.words[state.currentIndex].word) }
         }
         binding.recordButton.setOnClickListener { requestAudioAndListen() }
         binding.nextButton.setOnClickListener {
@@ -60,6 +65,22 @@ class LearnWordsActivity : AppCompatActivity() {
     }
 
     private fun render(state: LearnState) {
+        if (state.words.isEmpty()) {
+            binding.wordText.text = "כל הכבוד! למדת את כל המילים! 🎉"
+            binding.translationText.visibility = View.GONE
+            binding.successText.visibility = View.GONE
+            binding.progressDotsContainer.visibility = View.GONE
+            binding.listenButton.isEnabled = false
+            binding.recordButton.isEnabled = false
+            binding.nextButton.isEnabled = true
+            binding.nextButton.text = "חזרה למסך הבית"
+            binding.nextButton.setOnClickListener {
+                startActivity(Intent(this, com.ysompo.englishwords.ui.home.HomeActivity::class.java))
+                finish()
+            }
+            return
+        }
+
         if (dotViews.size != state.words.size) {
             binding.progressDotsContainer.removeAllViews()
             dotViews.clear()
