@@ -40,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
             })
         }
         binding.progressButton.setOnClickListener {
-            // ProgressActivity is wired in Task 18
+            startActivity(Intent(this, com.ysompo.englishwords.ui.progress.ProgressActivity::class.java))
         }
         binding.settingsButton.setOnClickListener {
             // SettingsActivity is wired in Task 19
