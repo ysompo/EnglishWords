@@ -1,5 +1,6 @@
 package com.ysompo.englishwords.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +35,9 @@ class HomeActivity : AppCompatActivity() {
             // LearnWordsActivity is wired in Task 17
         }
         binding.weeklyQuizButton.setOnClickListener {
-            // QuizActivity (MODE_WEEKLY) is wired in Task 16
+            startActivity(Intent(this, com.ysompo.englishwords.ui.quiz.QuizActivity::class.java).apply {
+                putExtra(com.ysompo.englishwords.ui.quiz.QuizActivity.EXTRA_QUIZ_MODE, com.ysompo.englishwords.ui.quiz.QuizActivity.MODE_WEEKLY)
+            })
         }
         binding.progressButton.setOnClickListener {
             // ProgressActivity is wired in Task 18
