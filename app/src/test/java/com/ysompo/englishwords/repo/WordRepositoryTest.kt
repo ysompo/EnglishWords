@@ -38,7 +38,7 @@ class WordRepositoryTest {
         repository.ensureSeeded(context) // calling twice must not duplicate rows
 
         val words = repository.allWordsOrdered()
-        assertThat(words).hasSize(40)
+        assertThat(words).hasSize(1000)
         assertThat(words.first().orderIndex).isEqualTo(1)
     }
 }

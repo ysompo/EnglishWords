@@ -34,7 +34,7 @@ class WordSeederTest {
 
         seeder.seedIfNeeded()
 
-        assertThat(db.wordDao().count()).isEqualTo(40)
+        assertThat(db.wordDao().count()).isEqualTo(1000)
     }
 
     @Test
