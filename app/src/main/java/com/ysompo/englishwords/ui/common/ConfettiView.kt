@@ -15,6 +15,7 @@ class ConfettiView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs) {
 
     private val emojis = listOf("⭐", "🎉", "✨", "🏆")
+    private val activeAnimators = mutableListOf<AnimatorSet>()
 
     fun burst(particleCount: Int = 16) {
         val random = Random(System.currentTimeMillis())
@@ -36,16 +37,25 @@ class ConfettiView @JvmOverloads constructor(
             val moveY = ObjectAnimator.ofFloat(particle, "translationY", 0f, endY)
             val fade = ObjectAnimator.ofFloat(particle, "alpha", 1f, 0f)
 
-            AnimatorSet().apply {
+            val animatorSet = AnimatorSet()
+            animatorSet.apply {
                 playTogether(moveX, moveY, fade)
                 duration = 900
                 addListener(object : android.animation.AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: android.animation.Animator) {
                         removeView(particle)
+                        activeAnimators.remove(animatorSet)
                     }
                 })
-                start()
             }
+            activeAnimators.add(animatorSet)
+            animatorSet.start()
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        activeAnimators.toList().forEach { it.cancel() }
+        activeAnimators.clear()
+        super.onDetachedFromWindow()
     }
 }

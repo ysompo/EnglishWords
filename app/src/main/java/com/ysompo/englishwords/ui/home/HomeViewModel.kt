@@ -48,7 +48,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val weekStart = WeekUtils.weekStartFor(today)
             val thisWeekThursday = weekStart.plusDays(4)
             val thisWeekAlreadyTaken = allStatuses.any { it.weekStartDate == WeekUtils.formatDate(weekStart) }
-            val weeklyQuizAvailable = !today.isBefore(thisWeekThursday) && !thisWeekAlreadyTaken
+            val weeklyQuizAvailable = learnedWords > 0 && !today.isBefore(thisWeekThursday) && !thisWeekAlreadyTaken
 
             state.value = HomeState(
                 totalWords = totalWords,

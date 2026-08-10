@@ -44,6 +44,15 @@ class QuizActivity : AppCompatActivity() {
     private fun render(state: QuizState) {
         binding.scoreText.text = "ניקוד: ${state.score}"
 
+        if (state.questions.isEmpty()) {
+            binding.questionText.visibility = View.GONE
+            binding.optionsContainer.visibility = View.GONE
+            binding.finishedText.visibility = View.VISIBLE
+            binding.doneButton.visibility = View.VISIBLE
+            binding.finishedText.text = "אין עדיין מילים לבחון"
+            return
+        }
+
         if (state.finished) {
             binding.questionText.visibility = View.GONE
             binding.optionsContainer.visibility = View.GONE
@@ -77,5 +86,10 @@ class QuizActivity : AppCompatActivity() {
             binding.optionsContainer.getChildAt(i).isEnabled = false
         }
         binding.root.postDelayed({ viewModel.submitAnswer(selected) }, 600)
+    }
+
+    override fun onDestroy() {
+        binding.root.removeCallbacks(null)
+        super.onDestroy()
     }
 }
