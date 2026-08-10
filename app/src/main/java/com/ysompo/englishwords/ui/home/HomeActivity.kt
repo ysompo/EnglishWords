@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, com.ysompo.englishwords.ui.progress.ProgressActivity::class.java))
         }
         binding.settingsButton.setOnClickListener {
-            // SettingsActivity is wired in Task 19
+            startActivity(Intent(this, com.ysompo.englishwords.ui.settings.SettingsActivity::class.java))
         }
     }
 

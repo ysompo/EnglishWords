@@ -25,6 +25,7 @@
         <activity android:name=".ui.quiz.QuizActivity" android:exported="false" />
         <activity android:name=".ui.learn.LearnWordsActivity" android:exported="false" />
         <activity android:name=".ui.progress.ProgressActivity" android:exported="false" />
+        <activity android:name=".ui.settings.SettingsActivity" android:exported="false" />
     </application>
 
 </manifest>
