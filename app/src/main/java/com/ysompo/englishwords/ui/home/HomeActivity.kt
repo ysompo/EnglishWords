@@ -1,15 +1,25 @@
 package com.ysompo.englishwords.ui.home
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.ysompo.englishwords.databinding.ActivityHomeBinding
+import com.ysompo.englishwords.notification.ReminderScheduler
+import com.ysompo.englishwords.settings.ReminderSettings
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var viewModel: HomeViewModel
+
+    private val requestNotificationPermission = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { /* no-op either way, reminder still schedules; just won't show without permission */ }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +55,15 @@ class HomeActivity : AppCompatActivity() {
         binding.settingsButton.setOnClickListener {
             startActivity(Intent(this, com.ysompo.englishwords.ui.settings.SettingsActivity::class.java))
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+
+        val settings = ReminderSettings(this)
+        ReminderScheduler.schedule(this, settings.getReminderHour(), settings.getReminderMinute())
     }
 
     override fun onResume() {
