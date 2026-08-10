@@ -89,7 +89,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        binding.root.removeCallbacks(null)
         super.onDestroy()
+        binding.root.handler?.removeCallbacksAndMessages(null)
     }
 }
