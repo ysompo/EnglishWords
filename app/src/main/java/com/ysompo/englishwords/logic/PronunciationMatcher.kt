@@ -7,11 +7,22 @@ object PronunciationMatcher {
         val target = normalize(targetWord)
         if (recognized.isEmpty()) return false
         if (recognized == target) return true
-        if (recognized.split(" ").any { it == target }) return true
 
-        val distance = levenshtein(recognized, target)
-        val tolerance = maxOf(1, target.length / 4)
-        return distance <= tolerance
+        val tolerance = toleranceFor(target)
+        if (recognized.split(" ").any { levenshtein(it, target) <= tolerance }) return true
+
+        return levenshtein(recognized, target) <= tolerance
+    }
+
+    // More forgiving than a strict phonetic check on purpose: this is a young child's first
+    // attempts at pronunciation, so we'd rather accept a slightly-off attempt than discourage
+    // them with a false "wrong" on a word they basically got right. Short words stay stricter
+    // (a 1-2 letter target is "close" to almost anything under a loose tolerance), longer words
+    // scale up more generously since STT noise tends to add/drop more characters on them.
+    private fun toleranceFor(target: String): Int = when {
+        target.length <= 2 -> 1
+        target.length <= 5 -> 2
+        else -> (target.length + 2) / 3
     }
 
     private fun normalize(text: String): String =

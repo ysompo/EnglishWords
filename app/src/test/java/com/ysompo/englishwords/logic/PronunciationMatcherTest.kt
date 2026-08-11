@@ -22,8 +22,24 @@ class PronunciationMatcherTest {
     }
 
     @Test
+    fun `mispronunciation two characters off is now also a match (more forgiving)`() {
+        assertThat(PronunciationMatcher.isMatch("hapi", "happy")).isTrue() // 2 edits off "happy"
+    }
+
+    @Test
+    fun `a slightly misheard word inside a longer phrase still matches`() {
+        // "happpy" (extra p) is 1 edit from "happy", buried inside a 3-word phrase.
+        assertThat(PronunciationMatcher.isMatch("a happpy day", "happy")).isTrue()
+    }
+
+    @Test
     fun `unrelated word is not a match`() {
         assertThat(PronunciationMatcher.isMatch("banana", "happy")).isFalse()
+    }
+
+    @Test
+    fun `short target words stay reasonably strict so they are not trivially satisfied`() {
+        assertThat(PronunciationMatcher.isMatch("cats", "it")).isFalse()
     }
 
     @Test
