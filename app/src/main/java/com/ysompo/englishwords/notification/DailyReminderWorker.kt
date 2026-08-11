@@ -47,6 +47,7 @@ class DailyReminderWorker(context: Context, params: WorkerParameters) : Coroutin
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle(applicationContext.getString(R.string.app_name))
             .setContentText(applicationContext.getString(R.string.reminder_notification_text))
             .setAutoCancel(true)
             .build()
