@@ -1,11 +1,14 @@
 package com.ysompo.englishwords.ui.quiz
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
+import com.ysompo.englishwords.R
 import com.ysompo.englishwords.databinding.ActivityQuizBinding
 import com.ysompo.englishwords.ui.home.HomeActivity
 import android.content.Intent
@@ -72,9 +75,20 @@ class QuizActivity : AppCompatActivity() {
         }
 
         binding.optionsContainer.removeAllViews()
+        val optionMargin = (8 * resources.displayMetrics.density).toInt()
         question.options.forEach { option ->
             val button = Button(this).apply {
                 text = option
+                textSize = 17f
+                isAllCaps = false
+                typeface = ResourcesCompat.getFont(this@QuizActivity, R.font.rubik)
+                setTextColor(ContextCompat.getColor(this@QuizActivity, R.color.text_charcoal))
+                setBackgroundResource(R.drawable.bg_option_default)
+                setPadding(paddingLeft, (16 * resources.displayMetrics.density).toInt(), paddingRight, (16 * resources.displayMetrics.density).toInt())
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { topMargin = optionMargin }
                 setOnClickListener { onOptionSelected(this, option, question.correctAnswer) }
             }
             binding.optionsContainer.addView(button)
@@ -82,7 +96,9 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun onOptionSelected(button: Button, selected: String, correctAnswer: String) {
-        button.setBackgroundColor(if (selected == correctAnswer) Color.parseColor("#7CB342") else Color.parseColor("#E57373"))
+        val isCorrect = selected == correctAnswer
+        button.setBackgroundResource(if (isCorrect) R.drawable.bg_option_correct else R.drawable.bg_option_incorrect)
+        button.setTextColor(ContextCompat.getColor(this, R.color.text_on_color))
         for (i in 0 until binding.optionsContainer.childCount) {
             binding.optionsContainer.getChildAt(i).isEnabled = false
         }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- "Candy Arcade" palette: warm coral primary, cool turquoise secondary, golden rewards.
+         Chosen deliberately over a generic blue/purple app look - this is a kids' game, it
+         should feel like one. -->
+
+    <!-- Backgrounds -->
+    <color name="bg_cream">#FFF7EC</color>
+    <color name="bg_card">#FFFFFF</color>
+
+    <!-- Brand -->
+    <color name="coral_primary">#FF6B4A</color>
+    <color name="coral_primary_dark">#E0502E</color>
+    <color name="coral_primary_light">#FFE4DA</color>
+
+    <color name="teal_secondary">#00BFA5</color>
+    <color name="teal_secondary_dark">#009481</color>
+    <color name="teal_secondary_light">#D6F5F0</color>
+
+    <color name="gold_reward">#FFC93C</color>
+    <color name="gold_reward_dark">#E0A800</color>
+
+    <!-- Feedback -->
+    <color name="success_green">#4CAF50</color>
+    <color name="success_green_dark">#388E3C</color>
+    <color name="error_red">#FF5C5C</color>
+    <color name="error_red_dark">#E04444</color>
+    <color name="neutral_gray">#B0AEC2</color>
+    <color name="locked_gray">#DDD9EC</color>
+
+    <!-- Text -->
+    <color name="text_charcoal">#2D2B45</color>
+    <color name="text_charcoal_soft">#6E6B8A</color>
+    <color name="text_on_color">#FFFFFF</color>
+
+    <color name="wordle_correct">#4CAF50</color>
+    <color name="wordle_present">#FFC93C</color>
+    <color name="wordle_absent">#B0AEC2</color>
+</resources>

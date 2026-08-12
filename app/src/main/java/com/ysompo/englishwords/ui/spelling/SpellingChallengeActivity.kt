@@ -1,7 +1,6 @@
 package com.ysompo.englishwords.ui.spelling
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.Gravity
@@ -9,7 +8,10 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
+import com.ysompo.englishwords.R
 import com.ysompo.englishwords.databinding.ActivitySpellingChallengeBinding
 import com.ysompo.englishwords.logic.Encouragements
 import com.ysompo.englishwords.logic.LetterState
@@ -43,6 +45,10 @@ class SpellingChallengeActivity : AppCompatActivity() {
         viewModel.state.observe(this) { state -> render(state) }
 
         binding.guessInput.filters = arrayOf(InputFilter.LengthFilter(word.length))
+        // The English word must read/type left-to-right even though the rest of the app's UI
+        // is Hebrew RTL - without this, letters would visually reverse (e.g. "GOOD" -> "D O O G").
+        binding.guessInput.layoutDirection = View.LAYOUT_DIRECTION_LTR
+        binding.guessInput.textDirection = View.TEXT_DIRECTION_LTR
 
         binding.listenButton.setOnClickListener { ttsHelper.speak(word) }
         binding.guessButton.setOnClickListener {
@@ -83,7 +89,12 @@ class SpellingChallengeActivity : AppCompatActivity() {
     }
 
     private fun buildGuessRow(result: GuessResult): LinearLayout {
-        val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        // Force LTR here too, for the same reason as guessInput above - otherwise the tile
+        // order visually reverses under the app's RTL layout direction.
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutDirection = View.LAYOUT_DIRECTION_LTR
+        }
         val size = (40 * resources.displayMetrics.density).toInt()
         val margin = (2 * resources.displayMetrics.density).toInt()
 
@@ -92,12 +103,13 @@ class SpellingChallengeActivity : AppCompatActivity() {
                 text = letter.uppercase()
                 textSize = 22f
                 gravity = Gravity.CENTER
-                setTextColor(Color.WHITE)
-                setBackgroundColor(
+                typeface = ResourcesCompat.getFont(this@SpellingChallengeActivity, R.font.rubik)
+                setTextColor(ContextCompat.getColor(this@SpellingChallengeActivity, R.color.text_on_color))
+                setBackgroundResource(
                     when (result.letterStates[index]) {
-                        LetterState.CORRECT -> Color.parseColor("#7CB342")
-                        LetterState.PRESENT -> Color.parseColor("#F5A623")
-                        LetterState.ABSENT -> Color.parseColor("#9E9E9E")
+                        LetterState.CORRECT -> R.drawable.bg_option_correct
+                        LetterState.PRESENT -> R.drawable.bg_tile_present
+                        LetterState.ABSENT -> R.drawable.bg_tile_absent
                     }
                 )
                 layoutParams = LinearLayout.LayoutParams(size, size).apply {

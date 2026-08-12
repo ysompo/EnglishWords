@@ -1,61 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center">
+    android:background="@color/bg_cream">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="שעת התזכורת היומית" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TimePicker
-        android:id="@+id/reminderTimePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:timePickerMode="spinner" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_marginTop="24dp"
-        android:text="רמת קושי" />
-
-    <RadioGroup
-        android:id="@+id/difficultyRadioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
-
-        <RadioButton
-            android:id="@+id/difficultyBeginner"
+        <TextView
+            style="@style/Text.App.Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="מתחילים" />
+            android:textSize="24sp"
+            android:layout_marginBottom="16dp"
+            android:text="⚙️ הגדרות" />
 
-        <RadioButton
-            android:id="@+id/difficultyIntermediate"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="בינוני" />
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="20dp"
+            android:gravity="center_horizontal">
 
-        <RadioButton
-            android:id="@+id/difficultyAdvanced"
-            android:layout_width="wrap_content"
+            <TextView
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="⏰ שעת התזכורת היומית" />
+
+            <TimePicker
+                android:id="@+id/reminderTimePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:timePickerMode="spinner" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="מתקדם" />
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="20dp"
+            android:layout_marginTop="16dp">
 
-    </RadioGroup>
+            <TextView
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="🎯 רמת קושי" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="שמור" />
+            <RadioGroup
+                android:id="@+id/difficultyRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
 
-</LinearLayout>
+                <RadioButton
+                    android:id="@+id/difficultyBeginner"
+                    style="@style/Text.App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/teal_secondary"
+                    android:textSize="17sp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:text="מתחילים" />
+
+                <RadioButton
+                    android:id="@+id/difficultyIntermediate"
+                    style="@style/Text.App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/teal_secondary"
+                    android:textSize="17sp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:text="בינוני" />
+
+                <RadioButton
+                    android:id="@+id/difficultyAdvanced"
+                    style="@style/Text.App.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/teal_secondary"
+                    android:textSize="17sp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:text="מתקדם" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/saveButton"
+            style="@style/Widget.App.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="שמור" />
+
+    </LinearLayout>
+</ScrollView>

@@ -5,13 +5,14 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.ysompo.englishwords.R
 import com.ysompo.englishwords.databinding.ActivityLearnWordsBinding
 import com.ysompo.englishwords.speech.SpeechRecognitionHelper
 import com.ysompo.englishwords.speech.TtsHelper
@@ -22,6 +23,10 @@ class LearnWordsActivity : AppCompatActivity() {
     private lateinit var ttsHelper: TtsHelper
     private lateinit var speechHelper: SpeechRecognitionHelper
     private val dotViews = mutableListOf<View>()
+    // render() fires on every state change (a failed attempt, a successful match), not just when
+    // moving to a new word - without this guard the word gets spoken again on each of those,
+    // not just once when it first appears.
+    private var lastSpokenWordIndex = -1
 
     private val requestAudioPermission = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
@@ -96,17 +101,25 @@ class LearnWordsActivity : AppCompatActivity() {
         if (dotViews.size != state.words.size) {
             binding.progressDotsContainer.removeAllViews()
             dotViews.clear()
+            val dotSize = (18 * resources.displayMetrics.density).toInt()
+            val dotMargin = (6 * resources.displayMetrics.density).toInt()
             state.words.forEach { _ ->
                 val dot = ImageView(this).apply {
-                    layoutParams = android.widget.LinearLayout.LayoutParams(24, 24).apply { marginEnd = 12 }
-                    setBackgroundColor(Color.LTGRAY)
+                    layoutParams = android.widget.LinearLayout.LayoutParams(dotSize, dotSize).apply {
+                        marginStart = dotMargin
+                        marginEnd = dotMargin
+                    }
+                    setBackgroundResource(R.drawable.bg_dot)
                 }
                 binding.progressDotsContainer.addView(dot)
                 dotViews.add(dot)
             }
         }
+        val completeColor = ContextCompat.getColor(this, R.color.gold_reward)
+        val pendingColor = ContextCompat.getColor(this, R.color.locked_gray)
         dotViews.forEachIndexed { index, dot ->
-            dot.setBackgroundColor(if (index < state.currentIndex || (index == state.currentIndex && state.currentWordMastered)) Color.parseColor("#F5A623") else Color.LTGRAY)
+            val isDone = index < state.currentIndex || (index == state.currentIndex && state.currentWordMastered)
+            dot.backgroundTintList = ColorStateList.valueOf(if (isDone) completeColor else pendingColor)
         }
 
         val word = state.words[state.currentIndex]
@@ -123,7 +136,10 @@ class LearnWordsActivity : AppCompatActivity() {
             playSuccessAnimation()
         }
 
-        ttsHelper.speak(word.word)
+        if (state.currentIndex != lastSpokenWordIndex) {
+            lastSpokenWordIndex = state.currentIndex
+            ttsHelper.speak(word.word)
+        }
     }
 
     private fun playSuccessAnimation() {

@@ -1,61 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center">
+    android:background="@color/bg_cream">
 
     <LinearLayout
-        android:id="@+id/progressDotsContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="24dp" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/wordText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="36sp"
-        android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/progressDotsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="28dp" />
 
-    <TextView
-        android:id="@+id/translationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_marginTop="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@drawable/bg_card"
+            android:padding="32dp">
 
-    <TextView
-        android:id="@+id/successText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:text="מעולה! 🎉"
-        android:visibility="invisible"
-        android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/wordText"
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="42sp"
+                android:textColor="@color/coral_primary_dark" />
 
-    <Button
-        android:id="@+id/listenButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="🔊 השמע שוב" />
+            <TextView
+                android:id="@+id/translationText"
+                style="@style/Text.App.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_marginTop="8dp" />
 
-    <Button
-        android:id="@+id/recordButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="🎤 עכשיו תגיד את המילה" />
+            <TextView
+                android:id="@+id/successText"
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="@color/success_green_dark"
+                android:text="מעולה! 🎉"
+                android:visibility="invisible"
+                android:layout_marginTop="16dp" />
 
-    <Button
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="הבא"
-        android:enabled="false" />
+        </LinearLayout>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/listenButton"
+            style="@style/Widget.App.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="🔊 השמע שוב" />
+
+        <Button
+            android:id="@+id/recordButton"
+            style="@style/Widget.App.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="🎤 עכשיו תגיד את המילה" />
+
+        <Button
+            android:id="@+id/nextButton"
+            style="@style/Widget.App.Button.Success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="הבא"
+            android:enabled="false" />
+
+    </LinearLayout>
+</ScrollView>

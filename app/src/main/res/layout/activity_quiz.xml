@@ -1,54 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_cream">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/scoreText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:text="ניקוד: 0" />
-
-        <TextView
-            android:id="@+id/questionText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:layout_marginTop="24dp"
-            android:gravity="center" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/optionsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp" />
+            android:padding="24dp"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/finishedText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginTop="24dp"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/scoreText"
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/bg_pill_gold"
+                android:textColor="@color/gold_reward_dark"
+                android:textSize="16sp"
+                android:text="ניקוד: 0" />
 
-        <Button
-            android:id="@+id/doneButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="סיום"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@drawable/bg_card"
+                android:padding="28dp"
+                android:layout_marginTop="20dp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/questionText"
+                    style="@style/Text.App.Heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="26sp"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:id="@+id/optionsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="24dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/finishedText"
+                style="@style/Text.App.Heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="@color/coral_primary_dark"
+                android:gravity="center"
+                android:layout_marginTop="28dp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/doneButton"
+                style="@style/Widget.App.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="סיום"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.ysompo.englishwords.ui.common.ConfettiView
         android:id="@+id/confettiView"

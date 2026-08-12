@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.EnglishWords" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#4A90D9</item>
-        <item name="colorPrimaryDark">#2E6DA4</item>
-        <item name="colorAccent">#F5A623</item>
+        <item name="colorPrimary">@color/coral_primary</item>
+        <item name="colorPrimaryDark">@color/coral_primary_dark</item>
+        <item name="colorAccent">@color/teal_secondary</item>
+        <item name="android:windowBackground">@color/bg_cream</item>
+        <item name="android:fontFamily">@font/rubik</item>
+        <item name="android:textColor">@color/text_charcoal</item>
+        <item name="colorControlNormal">@color/teal_secondary</item>
+        <item name="colorControlActivated">@color/coral_primary</item>
     </style>
 </resources>
