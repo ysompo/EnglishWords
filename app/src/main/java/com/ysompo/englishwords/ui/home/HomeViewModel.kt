@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ysompo.englishwords.data.AppDatabase
 import com.ysompo.englishwords.logic.BadgeCalculator
+import com.ysompo.englishwords.logic.LevelProgressCalculator
 import com.ysompo.englishwords.logic.StreakCalculator
 import com.ysompo.englishwords.logic.WeekUtils
 import com.ysompo.englishwords.repo.ProgressRepository
@@ -20,7 +21,8 @@ data class HomeState(
     val starredWeekStreak: Int,
     val nextBadgeTitle: String?,
     val wordsUntilNextBadge: Int,
-    val weeklyQuizAvailable: Boolean
+    val weeklyQuizAvailable: Boolean,
+    val currentLevel: Int
 )
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -57,7 +59,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 starredWeekStreak = streak,
                 nextBadgeTitle = nextBadge?.titleHe,
                 wordsUntilNextBadge = nextBadge?.let { it.threshold - learnedWords } ?: 0,
-                weeklyQuizAvailable = weeklyQuizAvailable
+                weeklyQuizAvailable = weeklyQuizAvailable,
+                currentLevel = LevelProgressCalculator.currentLevelNumber(learnedWords)
             )
         }
     }

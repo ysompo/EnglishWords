@@ -8,9 +8,11 @@ import com.ysompo.englishwords.data.AppDatabase
 import com.ysompo.englishwords.data.WeeklyStatusEntity
 import com.ysompo.englishwords.logic.Badge
 import com.ysompo.englishwords.logic.BadgeCalculator
+import com.ysompo.englishwords.logic.LevelProgressCalculator
 import com.ysompo.englishwords.logic.StreakCalculator
 import com.ysompo.englishwords.logic.WeekUtils
 import com.ysompo.englishwords.repo.ProgressRepository
+import com.ysompo.englishwords.repo.WordRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
@@ -20,12 +22,16 @@ data class ProgressState(
     val learnedWordCount: Int,
     val unlockedBadges: List<Badge>,
     val lockedBadges: List<Badge>,
-    val currentMonthFullyStarred: Boolean
+    val currentMonthFullyStarred: Boolean,
+    val levelsCompleted: Int,
+    val currentLevel: Int,
+    val totalLevels: Int
 )
 
 class ProgressViewModel(application: Application) : AndroidViewModel(application) {
     private val db = AppDatabase.getInstance(application)
     private val progressRepository = ProgressRepository(db)
+    private val wordRepository = WordRepository(db)
 
     val state = MutableLiveData<ProgressState>()
 
@@ -33,6 +39,7 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             val allStatuses = progressRepository.allWeeklyStatuses().sortedBy { it.weekStartDate }
             val learnedCount = progressRepository.learnedWordCount()
+            val totalWordCount = wordRepository.allWordsOrdered().size
 
             val currentMonth = YearMonth.from(LocalDate.now())
             val statusesInCurrentMonth = allStatuses.filter {
@@ -43,7 +50,16 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
             val unlocked = BadgeCalculator.unlockedBadges(learnedCount)
             val locked = BadgeCalculator.ALL_BADGES - unlocked.toSet()
 
-            state.value = ProgressState(allStatuses, learnedCount, unlocked, locked, monthFullyStarred)
+            state.value = ProgressState(
+                weeklyStatuses = allStatuses,
+                learnedWordCount = learnedCount,
+                unlockedBadges = unlocked,
+                lockedBadges = locked,
+                currentMonthFullyStarred = monthFullyStarred,
+                levelsCompleted = LevelProgressCalculator.levelsCompleted(learnedCount),
+                currentLevel = LevelProgressCalculator.currentLevelNumber(learnedCount),
+                totalLevels = LevelProgressCalculator.totalLevels(totalWordCount)
+            )
         }
     }
 }

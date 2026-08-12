@@ -41,6 +41,34 @@
             android:layout_marginTop="24dp"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:text="מפת הרמות שלי" />
+
+        <TextView
+            android:id="@+id/levelsSummaryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:id="@+id/levelPathContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:text="התגים שלי" />
 
         <LinearLayout

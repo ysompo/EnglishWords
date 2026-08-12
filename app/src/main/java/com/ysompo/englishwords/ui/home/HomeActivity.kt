@@ -47,7 +47,9 @@ class HomeActivity : AppCompatActivity() {
             } else {
                 "פתחת את כל התגים!"
             }
-            binding.startButton.text = if (state.todayComplete) "כבר סיימת היום, כל הכבוד!" else "התחל ללמוד היום"
+            binding.levelText.text = "🎮 רמה ${state.currentLevel}"
+            binding.startButton.text = "התחל רמה ${state.currentLevel}"
+            binding.todayCompleteBadge.visibility = if (state.todayComplete) View.VISIBLE else View.GONE
             binding.weeklyQuizButton.visibility = if (state.weeklyQuizAvailable) View.VISIBLE else View.GONE
         }
 
