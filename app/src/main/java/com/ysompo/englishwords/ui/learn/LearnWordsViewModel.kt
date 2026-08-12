@@ -16,7 +16,8 @@ import java.time.LocalDate
 data class LearnState(
     val words: List<WordEntity>,
     val currentIndex: Int,
-    val currentWordMastered: Boolean
+    val currentWordMastered: Boolean,
+    val attemptsOnCurrentWord: Int = 0
 )
 
 class LearnWordsViewModel(application: Application) : AndroidViewModel(application) {
@@ -26,6 +27,12 @@ class LearnWordsViewModel(application: Application) : AndroidViewModel(applicati
 
     val state = MutableLiveData<LearnState>()
     private val masteredIds = mutableSetOf<Int>()
+
+    companion object {
+        // After this many attempts on a word without a match, let the child skip it rather than
+        // get stuck - it simply won't be marked "learned" today, so it comes back another day.
+        const val MAX_ATTEMPTS_BEFORE_SKIP = 4
+    }
 
     fun load() {
         viewModelScope.launch {
@@ -43,20 +50,36 @@ class LearnWordsViewModel(application: Application) : AndroidViewModel(applicati
         if (matched) {
             masteredIds.add(targetWord.id)
             state.value = current.copy(currentWordMastered = true)
+        } else {
+            registerFailedAttempt(current)
         }
+    }
+
+    fun onRecognitionFailed() {
+        val current = state.value ?: return
+        registerFailedAttempt(current)
+    }
+
+    private fun registerFailedAttempt(current: LearnState) {
+        state.value = current.copy(attemptsOnCurrentWord = current.attemptsOnCurrentWord + 1)
+    }
+
+    fun canProceedFromCurrentWord(): Boolean {
+        val current = state.value ?: return false
+        return current.currentWordMastered || current.attemptsOnCurrentWord >= MAX_ATTEMPTS_BEFORE_SKIP
+    }
+
+    fun isLastWord(): Boolean {
+        val current = state.value ?: return false
+        return current.currentIndex == current.words.lastIndex
     }
 
     fun advanceToNextWord() {
         val current = state.value ?: return
         val nextIndex = current.currentIndex + 1
         if (nextIndex < current.words.size) {
-            state.value = current.copy(currentIndex = nextIndex, currentWordMastered = false)
+            state.value = current.copy(currentIndex = nextIndex, currentWordMastered = false, attemptsOnCurrentWord = 0)
         }
-    }
-
-    fun isLastWordMastered(): Boolean {
-        val current = state.value ?: return false
-        return current.currentIndex == current.words.lastIndex && current.currentWordMastered
     }
 
     fun finishLearning(onDone: () -> Unit) {

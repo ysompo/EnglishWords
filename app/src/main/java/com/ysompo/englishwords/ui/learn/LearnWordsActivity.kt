@@ -49,7 +49,8 @@ class LearnWordsActivity : AppCompatActivity() {
         }
         binding.recordButton.setOnClickListener { requestAudioAndListen() }
         binding.nextButton.setOnClickListener {
-            if (viewModel.isLastWordMastered()) {
+            if (!viewModel.canProceedFromCurrentWord()) return@setOnClickListener
+            if (viewModel.isLastWord()) {
                 viewModel.finishLearning {
                     startActivity(Intent(this, com.ysompo.englishwords.ui.quiz.QuizActivity::class.java).apply {
                         putExtra(com.ysompo.englishwords.ui.quiz.QuizActivity.EXTRA_QUIZ_MODE, com.ysompo.englishwords.ui.quiz.QuizActivity.MODE_DAILY)
@@ -100,7 +101,10 @@ class LearnWordsActivity : AppCompatActivity() {
         val word = state.words[state.currentIndex]
         binding.wordText.text = word.word
         binding.translationText.text = word.translationHe
-        binding.nextButton.isEnabled = state.currentWordMastered
+
+        val canSkip = !state.currentWordMastered && state.attemptsOnCurrentWord >= LearnWordsViewModel.MAX_ATTEMPTS_BEFORE_SKIP
+        binding.nextButton.isEnabled = state.currentWordMastered || canSkip
+        binding.nextButton.text = if (canSkip) "דלג למילה הבאה" else "הבא"
         binding.successText.visibility = if (state.currentWordMastered) View.VISIBLE else View.INVISIBLE
 
         if (state.currentWordMastered) {
@@ -130,7 +134,7 @@ class LearnWordsActivity : AppCompatActivity() {
     private fun startListening() {
         speechHelper.startListening(
             onResult = { candidates -> viewModel.onRecognitionResult(candidates) },
-            onError = { /* allow the child to simply try again */ }
+            onError = { viewModel.onRecognitionFailed() }
         )
     }
 
