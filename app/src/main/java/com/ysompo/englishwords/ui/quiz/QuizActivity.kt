@@ -58,7 +58,8 @@ class QuizActivity : AppCompatActivity() {
             binding.optionsContainer.visibility = View.GONE
             binding.finishedText.visibility = View.VISIBLE
             binding.doneButton.visibility = View.VISIBLE
-            binding.finishedText.text = "סיימת! ${state.score} מתוך ${state.questions.size} נכון"
+            val encouragement = com.ysompo.englishwords.logic.Encouragements.random()
+            binding.finishedText.text = "$encouragement סיימת! ${state.score} מתוך ${state.questions.size} נכון"
             binding.confettiView.burst()
             return
         }

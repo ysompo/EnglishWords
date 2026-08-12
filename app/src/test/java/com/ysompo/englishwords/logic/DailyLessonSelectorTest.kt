@@ -35,4 +35,22 @@ class DailyLessonSelectorTest {
 
         assertThat(result).hasSize(3)
     }
+
+    @Test
+    fun `minOrderIndex skips easier words entirely, for a higher proficiency level`() {
+        val words = (1..20).map { word(it, orderIndex = it) }
+
+        val result = DailyLessonSelector.nextWordsToLearn(words, learnedWordIds = emptySet(), minOrderIndex = 10)
+
+        assertThat(result.map { it.id }).containsExactly(11, 12, 13, 14, 15).inOrder()
+    }
+
+    @Test
+    fun `minOrderIndex defaults to 0, matching the previous behavior`() {
+        val words = (1..10).map { word(it, orderIndex = it) }
+
+        val result = DailyLessonSelector.nextWordsToLearn(words, learnedWordIds = emptySet())
+
+        assertThat(result.map { it.id }).containsExactly(1, 2, 3, 4, 5).inOrder()
+    }
 }

@@ -31,9 +31,13 @@ class SpeechRecognitionHelper(private val context: Context) {
             })
         }
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            // WEB_SEARCH (not FREE_FORM) is the mode Android's docs recommend for short,
+            // isolated utterances like a single word - FREE_FORM is tuned for continuous
+            // dictation and leans on a sentence-level language model that tends to "correct"
+            // a single short word into a completely different common word.
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10)
         }
         recognizer?.startListening(intent)
     }

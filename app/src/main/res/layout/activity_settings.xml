@@ -18,6 +18,39 @@
         android:layout_height="wrap_content"
         android:timePickerMode="spinner" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        android:text="רמת קושי" />
+
+    <RadioGroup
+        android:id="@+id/difficultyRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <RadioButton
+            android:id="@+id/difficultyBeginner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="מתחילים" />
+
+        <RadioButton
+            android:id="@+id/difficultyIntermediate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="בינוני" />
+
+        <RadioButton
+            android:id="@+id/difficultyAdvanced"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="מתקדם" />
+
+    </RadioGroup>
+
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"

@@ -51,10 +51,21 @@ class LearnWordsActivity : AppCompatActivity() {
         binding.nextButton.setOnClickListener {
             if (!viewModel.canProceedFromCurrentWord()) return@setOnClickListener
             if (viewModel.isLastWord()) {
+                // Pick a word for the spelling mini-game before finishLearning() clears state -
+                // any word from today's batch that's a comfortable 4-5 letter length for a
+                // Wordle-style guess. If none qualify, skip straight to the quiz as before.
+                val spellingWord = viewModel.state.value?.words?.firstOrNull { it.word.length in 4..5 }
                 viewModel.finishLearning {
-                    startActivity(Intent(this, com.ysompo.englishwords.ui.quiz.QuizActivity::class.java).apply {
-                        putExtra(com.ysompo.englishwords.ui.quiz.QuizActivity.EXTRA_QUIZ_MODE, com.ysompo.englishwords.ui.quiz.QuizActivity.MODE_DAILY)
-                    })
+                    val nextScreen = if (spellingWord != null) {
+                        Intent(this, com.ysompo.englishwords.ui.spelling.SpellingChallengeActivity::class.java).apply {
+                            putExtra(com.ysompo.englishwords.ui.spelling.SpellingChallengeActivity.EXTRA_TARGET_WORD, spellingWord.word)
+                        }
+                    } else {
+                        Intent(this, com.ysompo.englishwords.ui.quiz.QuizActivity::class.java).apply {
+                            putExtra(com.ysompo.englishwords.ui.quiz.QuizActivity.EXTRA_QUIZ_MODE, com.ysompo.englishwords.ui.quiz.QuizActivity.MODE_DAILY)
+                        }
+                    }
+                    startActivity(nextScreen)
                     finish()
                 }
             } else {
@@ -108,6 +119,7 @@ class LearnWordsActivity : AppCompatActivity() {
         binding.successText.visibility = if (state.currentWordMastered) View.VISIBLE else View.INVISIBLE
 
         if (state.currentWordMastered) {
+            binding.successText.text = "${com.ysompo.englishwords.logic.Encouragements.random()} 🎉"
             playSuccessAnimation()
         }
 

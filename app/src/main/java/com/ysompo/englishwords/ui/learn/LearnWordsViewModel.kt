@@ -10,6 +10,7 @@ import com.ysompo.englishwords.logic.DailyLessonSelector
 import com.ysompo.englishwords.logic.PronunciationMatcher
 import com.ysompo.englishwords.repo.ProgressRepository
 import com.ysompo.englishwords.repo.WordRepository
+import com.ysompo.englishwords.settings.DifficultySettings
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -38,7 +39,8 @@ class LearnWordsViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             val allWords = wordRepository.allWordsOrdered()
             val learnedIds = progressRepository.learnedWordIds()
-            val todaysWords = DailyLessonSelector.nextWordsToLearn(allWords, learnedIds)
+            val minOrderIndex = DifficultySettings(getApplication()).getLevel().startingWordIndex
+            val todaysWords = DailyLessonSelector.nextWordsToLearn(allWords, learnedIds, minOrderIndex)
             state.value = LearnState(todaysWords, currentIndex = 0, currentWordMastered = false)
         }
     }
