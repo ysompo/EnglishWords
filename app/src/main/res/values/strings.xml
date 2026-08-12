@@ -3,4 +3,13 @@
     <string name="app_name">מילים באנגלית</string>
     <string name="reminder_channel_name">תזכורת יומית</string>
     <string name="reminder_notification_text">היי! עוד לא תרגלת אנגלית היום 🙂</string>
+
+    <string name="update_available_title">גרסה חדשה זמינה</string>
+    <string name="update_available_message">יש גרסה חדשה של האפליקציה (%1$s). לעדכן עכשיו?</string>
+    <string name="update_now">עדכן עכשיו</string>
+    <string name="update_later">לא עכשיו</string>
+    <string name="update_downloading">מוריד עדכון, נא להמתין…</string>
+    <string name="update_download_failed">ההורדה נכשלה. אפשר לנסות שוב מאוחר יותר.</string>
+    <string name="update_no_apk_asset">לא נמצא קובץ התקנה בגרסה החדשה.</string>
+    <string name="update_grant_install_permission">צריך לאשר התקנת אפליקציות ממקור זה כדי להמשיך</string>
 </resources>
