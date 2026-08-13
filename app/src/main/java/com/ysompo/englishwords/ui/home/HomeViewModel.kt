@@ -22,7 +22,9 @@ data class HomeState(
     val nextBadgeTitle: String?,
     val wordsUntilNextBadge: Int,
     val weeklyQuizAvailable: Boolean,
-    val currentLevel: Int
+    val currentLevel: Int,
+    val levelsCompleted: Int,
+    val totalLevels: Int
 )
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -60,7 +62,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 nextBadgeTitle = nextBadge?.titleHe,
                 wordsUntilNextBadge = nextBadge?.let { it.threshold - learnedWords } ?: 0,
                 weeklyQuizAvailable = weeklyQuizAvailable,
-                currentLevel = LevelProgressCalculator.currentLevelNumber(learnedWords)
+                currentLevel = LevelProgressCalculator.currentLevelNumber(learnedWords),
+                levelsCompleted = LevelProgressCalculator.levelsCompleted(learnedWords),
+                totalLevels = LevelProgressCalculator.totalLevels(totalWords)
             )
         }
     }

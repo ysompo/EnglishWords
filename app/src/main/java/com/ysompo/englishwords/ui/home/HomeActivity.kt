@@ -16,6 +16,7 @@ import com.ysompo.englishwords.BuildConfig
 import com.ysompo.englishwords.R
 import com.ysompo.englishwords.databinding.ActivityHomeBinding
 import com.ysompo.englishwords.logic.LatestReleaseInfo
+import com.ysompo.englishwords.logic.LevelMapGeometry
 import com.ysompo.englishwords.logic.UpdateVersionComparator
 import com.ysompo.englishwords.notification.ReminderScheduler
 import com.ysompo.englishwords.settings.ReminderSettings
@@ -47,13 +48,19 @@ class HomeActivity : AppCompatActivity() {
             } else {
                 "פתחת את כל התגים!"
             }
-            binding.levelText.text = "🎮 שלב ${state.currentLevel}"
-            binding.startButton.text = "התחל שלב ${state.currentLevel}"
+            binding.levelText.text = "🎮 שלב ${state.currentLevel} מתוך ${state.totalLevels}"
             binding.todayCompleteBadge.visibility = if (state.todayComplete) View.VISIBLE else View.GONE
             binding.weeklyQuizButton.visibility = if (state.weeklyQuizAvailable) View.VISIBLE else View.GONE
+
+            binding.levelMapView.setState(
+                currentLevel = state.currentLevel,
+                levelsCompleted = state.levelsCompleted,
+                totalLevels = state.totalLevels
+            )
+            binding.levelMapView.post { scrollMapToCurrentLevel() }
         }
 
-        binding.startButton.setOnClickListener {
+        binding.levelMapView.listener = LevelMapView.Listener {
             startActivity(Intent(this, com.ysompo.englishwords.ui.learn.LearnWordsActivity::class.java))
         }
         binding.weeklyQuizButton.setOnClickListener {
@@ -83,6 +90,18 @@ class HomeActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.load()
+    }
+
+    // Instant (not animated) since onResume re-triggers viewModel.load() every time the child
+    // returns to Home - an animated scroll firing on every return would be distracting.
+    private fun scrollMapToCurrentLevel() {
+        val nodeY = binding.levelMapView.currentLevelNodeY() ?: return
+        val target = LevelMapGeometry.scrollTargetY(
+            nodeCenterYPx = nodeY,
+            viewportHeightPx = binding.levelMapScroll.height.toFloat(),
+            contentHeightPx = binding.levelMapView.contentHeightPx()
+        )
+        binding.levelMapScroll.scrollTo(0, target)
     }
 
     // Checked once per app launch (not on every onResume) - this is a personal APK with no
