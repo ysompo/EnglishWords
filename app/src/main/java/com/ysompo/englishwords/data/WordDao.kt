@@ -7,7 +7,7 @@ import androidx.room.Query
 
 @Dao
 interface WordDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(words: List<WordEntity>)
 
     @Query("SELECT COUNT(*) FROM words")

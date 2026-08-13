@@ -61,7 +61,7 @@
                 android:layout_height="18dp"
                 android:layout_marginTop="22dp"
                 android:progressDrawable="@drawable/bg_progress_bar"
-                android:max="1000" />
+                android:max="1286" />
 
             <TextView
                 android:id="@+id/wordsProgressText"
@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:textSize="15sp"
-                android:text="0 מתוך 1000 מילים" />
+                android:text="0 מתוך 1286 מילים" />
 
             <TextView
                 android:id="@+id/nextBadgeText"
