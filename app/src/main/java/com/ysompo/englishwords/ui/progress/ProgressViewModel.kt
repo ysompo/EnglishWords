@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ysompo.englishwords.data.AppDatabase
 import com.ysompo.englishwords.data.WeeklyStatusEntity
+import com.ysompo.englishwords.data.WordEntity
 import com.ysompo.englishwords.logic.Badge
 import com.ysompo.englishwords.logic.BadgeCalculator
 import com.ysompo.englishwords.logic.LevelProgressCalculator
@@ -25,7 +26,9 @@ data class ProgressState(
     val currentMonthFullyStarred: Boolean,
     val levelsCompleted: Int,
     val currentLevel: Int,
-    val totalLevels: Int
+    val totalLevels: Int,
+    val wordsCompletedInCurrentLevel: Int,
+    val learnedWords: List<WordEntity>
 )
 
 class ProgressViewModel(application: Application) : AndroidViewModel(application) {
@@ -37,9 +40,13 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
 
     fun load() {
         viewModelScope.launch {
-            val allStatuses = progressRepository.allWeeklyStatuses().sortedBy { it.weekStartDate }
+            val allStatuses = progressRepository.effectiveWeeklyStatuses().sortedBy { it.weekStartDate }
             val learnedCount = progressRepository.learnedWordCount()
-            val totalWordCount = wordRepository.allWordsOrdered().size
+            val allWords = wordRepository.allWordsOrdered()
+            val totalWordCount = allWords.size
+
+            val wordsById = allWords.associateBy { it.id }
+            val learnedWordsList = progressRepository.learnedWordIdsByRecency().mapNotNull { wordsById[it] }
 
             val currentMonth = YearMonth.from(LocalDate.now())
             val statusesInCurrentMonth = allStatuses.filter {
@@ -58,7 +65,9 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
                 currentMonthFullyStarred = monthFullyStarred,
                 levelsCompleted = LevelProgressCalculator.levelsCompleted(learnedCount),
                 currentLevel = LevelProgressCalculator.currentLevelNumber(learnedCount),
-                totalLevels = LevelProgressCalculator.totalLevels(totalWordCount)
+                totalLevels = LevelProgressCalculator.totalLevels(totalWordCount),
+                wordsCompletedInCurrentLevel = LevelProgressCalculator.wordsCompletedInCurrentLevel(learnedCount),
+                learnedWords = learnedWordsList
             )
         }
     }

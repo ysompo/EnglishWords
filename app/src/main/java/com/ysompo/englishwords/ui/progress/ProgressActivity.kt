@@ -11,7 +11,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.ysompo.englishwords.R
+import com.ysompo.englishwords.data.WordEntity
 import com.ysompo.englishwords.databinding.ActivityProgressBinding
+import com.ysompo.englishwords.logic.LevelProgressCalculator
 
 class ProgressActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProgressBinding
@@ -38,13 +40,34 @@ class ProgressActivity : AppCompatActivity() {
         binding.weeklyStarsText.text = state.weeklyStatuses.joinToString(" ") { if (it.starEarned) "⭐" else "☆" }
             .ifEmpty { "עוד לא הושלם אף שבוע" }
 
-        binding.levelsSummaryText.text = "${state.levelsCompleted} מתוך ${state.totalLevels} שלבים הושלמו"
+        binding.levelsSummaryText.text = "${state.levelsCompleted} מתוך ${state.totalLevels} שלבים הושלמו • " +
+            "כרגע בשלב ${state.currentLevel} (${state.wordsCompletedInCurrentLevel}/${LevelProgressCalculator.WORDS_PER_LEVEL} מילים בשלב זה)"
         renderLevelPath(state)
 
         binding.badgesContainer.removeAllViews()
         state.unlockedBadges.forEach { badge -> binding.badgesContainer.addView(buildBadgeRow(badge.titleHe, locked = false)) }
         state.lockedBadges.forEach { badge ->
             binding.badgesContainer.addView(buildBadgeRow("${badge.titleHe} (${badge.threshold} מילים)", locked = true))
+        }
+
+        binding.learnedWordsSummaryText.text = "${state.learnedWords.size} מילים נלמדו עד כה"
+        binding.learnedWordsContainer.removeAllViews()
+        state.learnedWords.forEach { word -> binding.learnedWordsContainer.addView(buildLearnedWordRow(word)) }
+    }
+
+    private fun buildLearnedWordRow(word: WordEntity): TextView {
+        val margin = (4 * resources.displayMetrics.density).toInt()
+        val hPad = (14 * resources.displayMetrics.density).toInt()
+        val vPad = (10 * resources.displayMetrics.density).toInt()
+        return TextView(this).apply {
+            text = "${word.word} — ${word.translationHe}"
+            textSize = 15f
+            typeface = ResourcesCompat.getFont(this@ProgressActivity, R.font.rubik)
+            setPadding(hPad, vPad, hPad, vPad)
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                .apply { topMargin = margin }
+            setBackgroundResource(R.drawable.bg_card)
+            setTextColor(ContextCompat.getColor(this@ProgressActivity, R.color.text_charcoal))
         }
     }
 

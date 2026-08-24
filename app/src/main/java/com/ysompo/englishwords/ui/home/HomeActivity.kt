@@ -17,6 +17,7 @@ import com.ysompo.englishwords.R
 import com.ysompo.englishwords.databinding.ActivityHomeBinding
 import com.ysompo.englishwords.logic.LatestReleaseInfo
 import com.ysompo.englishwords.logic.LevelMapGeometry
+import com.ysompo.englishwords.logic.LevelProgressCalculator
 import com.ysompo.englishwords.logic.UpdateVersionComparator
 import com.ysompo.englishwords.notification.ReminderScheduler
 import com.ysompo.englishwords.settings.ReminderSettings
@@ -48,7 +49,8 @@ class HomeActivity : AppCompatActivity() {
             } else {
                 "פתחת את כל התגים!"
             }
-            binding.levelText.text = "🎮 שלב ${state.currentLevel} מתוך ${state.totalLevels}"
+            binding.levelText.text = "🎮 שלב ${state.currentLevel} מתוך ${state.totalLevels} " +
+                "(${state.wordsCompletedInCurrentLevel}/${LevelProgressCalculator.WORDS_PER_LEVEL} מילים בשלב זה)"
             binding.todayCompleteBadge.visibility = if (state.todayComplete) View.VISIBLE else View.GONE
             binding.weeklyQuizButton.visibility = if (state.weeklyQuizAvailable) View.VISIBLE else View.GONE
 

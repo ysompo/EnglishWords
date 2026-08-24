@@ -26,4 +26,12 @@ class LevelProgressCalculatorTest {
         assertThat(LevelProgressCalculator.totalLevels(1002)).isEqualTo(201)
         assertThat(LevelProgressCalculator.totalLevels(1)).isEqualTo(1)
     }
+
+    @Test
+    fun `wordsCompletedInCurrentLevel is the remainder of the current, not-yet-full batch`() {
+        assertThat(LevelProgressCalculator.wordsCompletedInCurrentLevel(0)).isEqualTo(0)
+        assertThat(LevelProgressCalculator.wordsCompletedInCurrentLevel(126)).isEqualTo(1)
+        assertThat(LevelProgressCalculator.wordsCompletedInCurrentLevel(125)).isEqualTo(0)
+        assertThat(LevelProgressCalculator.wordsCompletedInCurrentLevel(129)).isEqualTo(4)
+    }
 }

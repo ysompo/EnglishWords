@@ -24,7 +24,8 @@ data class HomeState(
     val weeklyQuizAvailable: Boolean,
     val currentLevel: Int,
     val levelsCompleted: Int,
-    val totalLevels: Int
+    val totalLevels: Int,
+    val wordsCompletedInCurrentLevel: Int
 )
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -45,7 +46,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             val todayComplete = StreakCalculator.isDayComplete(todayCompletion)
 
             val allStatuses = progressRepository.allWeeklyStatuses()
-            val streak = StreakCalculator.consecutiveStarredWeeks(allStatuses)
+            val effectiveStatuses = progressRepository.effectiveWeeklyStatuses()
+            val streak = StreakCalculator.consecutiveStarredWeeks(effectiveStatuses)
 
             val nextBadge = BadgeCalculator.nextBadge(learnedWords)
 
@@ -64,7 +66,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 weeklyQuizAvailable = weeklyQuizAvailable,
                 currentLevel = LevelProgressCalculator.currentLevelNumber(learnedWords),
                 levelsCompleted = LevelProgressCalculator.levelsCompleted(learnedWords),
-                totalLevels = LevelProgressCalculator.totalLevels(totalWords)
+                totalLevels = LevelProgressCalculator.totalLevels(totalWords),
+                wordsCompletedInCurrentLevel = LevelProgressCalculator.wordsCompletedInCurrentLevel(learnedWords)
             )
         }
     }

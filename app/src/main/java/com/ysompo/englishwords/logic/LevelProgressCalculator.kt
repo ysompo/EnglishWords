@@ -13,4 +13,11 @@ object LevelProgressCalculator {
 
     fun totalLevels(totalWordCount: Int): Int =
         (totalWordCount + WORDS_PER_LEVEL - 1) / WORDS_PER_LEVEL
+
+    // How many of the current (not-yet-completed) level's words are already learned - e.g. 1 out
+    // of 5. currentLevelNumber only ticks up once this hits WORDS_PER_LEVEL, so a child who has
+    // done N daily lessons but had words skipped along the way (see LearnWordsViewModel's
+    // pronunciation-skip path) will see a currentLevelNumber lower than N, with the remainder
+    // showing here rather than vanishing.
+    fun wordsCompletedInCurrentLevel(learnedWordCount: Int): Int = learnedWordCount % WORDS_PER_LEVEL
 }

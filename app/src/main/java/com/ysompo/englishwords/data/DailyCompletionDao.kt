@@ -15,4 +15,7 @@ interface DailyCompletionDao {
 
     @Query("SELECT * FROM daily_completion WHERE date BETWEEN :start AND :end")
     suspend fun getBetween(start: String, end: String): List<DailyCompletionEntity>
+
+    @Query("SELECT * FROM daily_completion")
+    suspend fun getAll(): List<DailyCompletionEntity>
 }

@@ -58,4 +58,40 @@ class ProgressRepositoryTest {
         assertThat(all).hasSize(1)
         assertThat(all.first().starEarned).isTrue()
     }
+
+    @Test
+    fun `effectiveWeeklyStatuses derives a starred week from daily completions alone, with no weekly quiz taken`() = runBlocking {
+        // Sunday 2026-08-09 through Tuesday 2026-08-11: 3 daily completions, no weekly quiz ever taken.
+        repository.recordDailyCompletion(LocalDate.of(2026, 8, 9), learningDone = true, quizDone = true, quizScore = 5)
+        repository.recordDailyCompletion(LocalDate.of(2026, 8, 10), learningDone = true, quizDone = true, quizScore = 5)
+        repository.recordDailyCompletion(LocalDate.of(2026, 8, 11), learningDone = true, quizDone = true, quizScore = 5)
+
+        val statuses = repository.effectiveWeeklyStatuses()
+
+        assertThat(statuses).hasSize(1)
+        assertThat(statuses.first().weekStartDate).isEqualTo("2026-08-09")
+        assertThat(statuses.first().daysCompleted).isEqualTo(3)
+        assertThat(statuses.first().starEarned).isTrue()
+        assertThat(statuses.first().weeklyQuizScore).isNull()
+    }
+
+    @Test
+    fun `effectiveWeeklyStatuses keeps the stored weekly quiz score when one was taken`() = runBlocking {
+        repository.recordDailyCompletion(LocalDate.of(2026, 8, 9), learningDone = true, quizDone = true, quizScore = 5)
+        repository.recordWeeklyStatus(LocalDate.of(2026, 8, 9), daysCompleted = 1, starEarned = false, quizScore = 4)
+
+        val statuses = repository.effectiveWeeklyStatuses()
+
+        assertThat(statuses).hasSize(1)
+        assertThat(statuses.first().weeklyQuizScore).isEqualTo(4)
+        assertThat(statuses.first().starEarned).isFalse()
+    }
+
+    @Test
+    fun `learnedWordIdsByRecency returns most recently learned word first`() = runBlocking {
+        repository.markWordsLearned(listOf(1, 2), LocalDate.of(2026, 8, 9))
+        repository.markWordsLearned(listOf(3), LocalDate.of(2026, 8, 10))
+
+        assertThat(repository.learnedWordIdsByRecency().first()).isEqualTo(3)
+    }
 }
