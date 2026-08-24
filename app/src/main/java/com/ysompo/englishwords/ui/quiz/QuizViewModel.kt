@@ -28,6 +28,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
     private val progressRepository = ProgressRepository(db)
 
     val state = MutableLiveData<QuizState>()
+    private val failedWordIds = mutableSetOf<Int>()
 
     fun loadDailyQuiz() {
         viewModelScope.launch {
@@ -55,6 +56,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
         val current = state.value ?: return
         val question = current.questions[current.currentIndex]
         val correct = selected == question.correctAnswer
+        if (!correct) failedWordIds.add(question.promptWord.id)
         val newScore = current.score + if (correct) 1 else 0
         val nextIndex = current.currentIndex + 1
         val finished = nextIndex >= current.questions.size
@@ -72,6 +74,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
             val current = state.value ?: return@launch
             val today = LocalDate.now()
             progressRepository.recordDailyCompletion(today, learningDone = true, quizDone = true, quizScore = current.score)
+            progressRepository.markWordsStruggled(failedWordIds.toList(), today)
             onDone()
         }
     }
@@ -84,6 +87,7 @@ class QuizViewModel(application: Application) : AndroidViewModel(application) {
             val completions = progressRepository.completionsForWeek(weekStart)
             val starEarned = StreakCalculator.weekStarEarned(completions)
             progressRepository.recordWeeklyStatus(weekStart, completions.size, starEarned, current.score)
+            progressRepository.markWordsStruggled(failedWordIds.toList(), today)
             onDone()
         }
     }

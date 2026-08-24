@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.ysompo.englishwords.R
-import com.ysompo.englishwords.data.WordEntity
 import com.ysompo.englishwords.databinding.ActivityProgressBinding
 import com.ysompo.englishwords.logic.LevelProgressCalculator
 
@@ -50,24 +49,38 @@ class ProgressActivity : AppCompatActivity() {
             binding.badgesContainer.addView(buildBadgeRow("${badge.titleHe} (${badge.threshold} מילים)", locked = true))
         }
 
-        binding.learnedWordsSummaryText.text = "${state.learnedWords.size} מילים נלמדו עד כה"
+        val practicingCount = state.learnedWords.count { it.needsPractice }
+        binding.learnedWordsSummaryText.text = if (practicingCount > 0) {
+            "${state.learnedWords.size - practicingCount} מילים נלמדו • $practicingCount מילים עדיין בתרגול"
+        } else {
+            "${state.learnedWords.size} מילים נלמדו עד כה"
+        }
         binding.learnedWordsContainer.removeAllViews()
-        state.learnedWords.forEach { word -> binding.learnedWordsContainer.addView(buildLearnedWordRow(word)) }
+        state.learnedWords.forEach { row -> binding.learnedWordsContainer.addView(buildLearnedWordRow(row)) }
     }
 
-    private fun buildLearnedWordRow(word: WordEntity): TextView {
+    private fun buildLearnedWordRow(row: LearnedWordRow): TextView {
         val margin = (4 * resources.displayMetrics.density).toInt()
         val hPad = (14 * resources.displayMetrics.density).toInt()
         val vPad = (10 * resources.displayMetrics.density).toInt()
         return TextView(this).apply {
-            text = "${word.word} — ${word.translationHe}"
+            text = if (row.needsPractice) {
+                "🔁 ${row.word.word} — ${row.word.translationHe} (בתרגול)"
+            } else {
+                "${row.word.word} — ${row.word.translationHe}"
+            }
             textSize = 15f
             typeface = ResourcesCompat.getFont(this@ProgressActivity, R.font.rubik)
             setPadding(hPad, vPad, hPad, vPad)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 .apply { topMargin = margin }
             setBackgroundResource(R.drawable.bg_card)
-            setTextColor(ContextCompat.getColor(this@ProgressActivity, R.color.text_charcoal))
+            setTextColor(
+                ContextCompat.getColor(
+                    this@ProgressActivity,
+                    if (row.needsPractice) R.color.text_charcoal_soft else R.color.text_charcoal
+                )
+            )
         }
     }
 

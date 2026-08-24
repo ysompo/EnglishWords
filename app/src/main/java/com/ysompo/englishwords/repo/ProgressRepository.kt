@@ -4,23 +4,47 @@ import com.ysompo.englishwords.data.AppDatabase
 import com.ysompo.englishwords.data.DailyCompletionEntity
 import com.ysompo.englishwords.data.LearningProgressEntity
 import com.ysompo.englishwords.data.WeeklyStatusEntity
+import com.ysompo.englishwords.data.WordStruggleEntity
 import com.ysompo.englishwords.logic.StreakCalculator
 import com.ysompo.englishwords.logic.WeekUtils
 import java.time.LocalDate
 
+// One row per word the child has ever encountered in a way worth showing on the progress screen:
+// mastered (learned = true), or attempted but not mastered - skipped after too many failed
+// pronunciation attempts in the daily lesson, or answered wrong in a quiz (learned = false).
+// `date` is whichever of those events is on record for this word, used to order the list.
+data class WordProgressEntry(val wordId: Int, val date: String, val mastered: Boolean)
+
 class ProgressRepository(private val db: AppDatabase) {
 
     suspend fun learnedWordIds(): Set<Int> = db.learningProgressDao().getLearnedWordIds().toSet()
-
-    // Most recently learned word first, so the "words I've learned" list on the progress screen
-    // shows newest first.
-    suspend fun learnedWordIdsByRecency(): List<Int> = db.learningProgressDao().getLearnedWordIdsByRecency()
 
     suspend fun learnedWordCount(): Int = db.learningProgressDao().countLearned()
 
     suspend fun markWordsLearned(wordIds: List<Int>, date: LocalDate) {
         val dateText = WeekUtils.formatDate(date)
         wordIds.forEach { db.learningProgressDao().insert(LearningProgressEntity(it, dateText)) }
+    }
+
+    // Records a word the child failed to translate/pronounce (skipped in the daily lesson after
+    // too many attempts) or answered incorrectly in a quiz, so it still shows up - flagged as
+    // needing more practice - in the "words I've learned" list rather than disappearing silently.
+    suspend fun markWordsStruggled(wordIds: List<Int>, date: LocalDate) {
+        val dateText = WeekUtils.formatDate(date)
+        wordIds.forEach { db.wordStruggleDao().insert(WordStruggleEntity(it, dateText)) }
+    }
+
+    suspend fun wordProgressEntries(): List<WordProgressEntry> {
+        val learned = db.learningProgressDao().getAll().associateBy { it.wordId }
+        val struggled = db.wordStruggleDao().getAll().associateBy { it.wordId }
+        return (learned.keys + struggled.keys).map { wordId ->
+            val learnedEntry = learned[wordId]
+            WordProgressEntry(
+                wordId = wordId,
+                date = learnedEntry?.learnedDate ?: struggled[wordId]!!.lastAttemptDate,
+                mastered = learnedEntry != null
+            )
+        }.sortedByDescending { it.date }
     }
 
     suspend fun recordDailyCompletion(date: LocalDate, learningDone: Boolean, quizDone: Boolean, quizScore: Int) {

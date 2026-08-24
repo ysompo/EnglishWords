@@ -13,8 +13,8 @@ interface LearningProgressDao {
     @Query("SELECT wordId FROM learning_progress")
     suspend fun getLearnedWordIds(): List<Int>
 
-    @Query("SELECT wordId FROM learning_progress ORDER BY learnedDate DESC")
-    suspend fun getLearnedWordIdsByRecency(): List<Int>
+    @Query("SELECT * FROM learning_progress")
+    suspend fun getAll(): List<LearningProgressEntity>
 
     @Query("SELECT COUNT(*) FROM learning_progress")
     suspend fun countLearned(): Int

@@ -86,7 +86,14 @@ class LearnWordsViewModel(application: Application) : AndroidViewModel(applicati
 
     fun finishLearning(onDone: () -> Unit) {
         viewModelScope.launch {
-            progressRepository.markWordsLearned(masteredIds.toList(), LocalDate.now())
+            val today = LocalDate.now()
+            val todaysWords = state.value?.words ?: emptyList()
+            // By the time this runs every word in today's batch is either mastered or was
+            // skipped after MAX_ATTEMPTS_BEFORE_SKIP failed pronunciation attempts (see
+            // canProceedFromCurrentWord) - the skipped ones never made it into masteredIds.
+            val strugglingIds = todaysWords.map { it.id }.filterNot { it in masteredIds }
+            progressRepository.markWordsLearned(masteredIds.toList(), today)
+            progressRepository.markWordsStruggled(strugglingIds, today)
             onDone()
         }
     }

@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
+data class LearnedWordRow(val word: WordEntity, val needsPractice: Boolean)
+
 data class ProgressState(
     val weeklyStatuses: List<WeeklyStatusEntity>,
     val learnedWordCount: Int,
@@ -28,7 +30,7 @@ data class ProgressState(
     val currentLevel: Int,
     val totalLevels: Int,
     val wordsCompletedInCurrentLevel: Int,
-    val learnedWords: List<WordEntity>
+    val learnedWords: List<LearnedWordRow>
 )
 
 class ProgressViewModel(application: Application) : AndroidViewModel(application) {
@@ -46,7 +48,9 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
             val totalWordCount = allWords.size
 
             val wordsById = allWords.associateBy { it.id }
-            val learnedWordsList = progressRepository.learnedWordIdsByRecency().mapNotNull { wordsById[it] }
+            val learnedWordsList = progressRepository.wordProgressEntries().mapNotNull { entry ->
+                wordsById[entry.wordId]?.let { LearnedWordRow(it, needsPractice = !entry.mastered) }
+            }
 
             val currentMonth = YearMonth.from(LocalDate.now())
             val statusesInCurrentMonth = allStatuses.filter {

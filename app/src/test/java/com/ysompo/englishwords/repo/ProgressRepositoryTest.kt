@@ -88,10 +88,36 @@ class ProgressRepositoryTest {
     }
 
     @Test
-    fun `learnedWordIdsByRecency returns most recently learned word first`() = runBlocking {
+    fun `wordProgressEntries orders mastered words most-recent-first`() = runBlocking {
         repository.markWordsLearned(listOf(1, 2), LocalDate.of(2026, 8, 9))
         repository.markWordsLearned(listOf(3), LocalDate.of(2026, 8, 10))
 
-        assertThat(repository.learnedWordIdsByRecency().first()).isEqualTo(3)
+        val entries = repository.wordProgressEntries()
+
+        assertThat(entries.first().wordId).isEqualTo(3)
+        assertThat(entries).hasSize(3)
+        assertThat(entries.all { it.mastered }).isTrue()
+    }
+
+    @Test
+    fun `wordProgressEntries includes struggled words flagged as not mastered`() = runBlocking {
+        repository.markWordsStruggled(listOf(7), LocalDate.of(2026, 8, 9))
+
+        val entries = repository.wordProgressEntries()
+
+        assertThat(entries).hasSize(1)
+        assertThat(entries.first().wordId).isEqualTo(7)
+        assertThat(entries.first().mastered).isFalse()
+    }
+
+    @Test
+    fun `wordProgressEntries treats a later-mastered word as mastered, not struggled`() = runBlocking {
+        repository.markWordsStruggled(listOf(7), LocalDate.of(2026, 8, 9))
+        repository.markWordsLearned(listOf(7), LocalDate.of(2026, 8, 12))
+
+        val entries = repository.wordProgressEntries()
+
+        assertThat(entries).hasSize(1)
+        assertThat(entries.first().mastered).isTrue()
     }
 }
